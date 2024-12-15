@@ -78,7 +78,7 @@ function Interview({ params: paramsPromise }) {
                             <strong>Enable the webcam and microphone to start your AI-Generated Mock Interview.</strong>
                         </p>
                         <ul className="list-disc ml-5 mt-2 text-yellow-600 text-sm">
-                            <li>The interview includes 5 questions that you can answer.</li>
+                            <li>The interview includes {process.env.NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT} questions that you can answer.</li>
                             <li>At the end, you will receive a report based on your responses.</li>
                         </ul>
                         <p className="text-yellow-600 mt-4 text-sm">

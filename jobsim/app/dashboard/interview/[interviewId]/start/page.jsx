@@ -5,6 +5,7 @@ import { eq } from 'drizzle-orm';
 import React, { useEffect, useState } from 'react'
 import QuestionsSection from './_components/QuestionsSection';
 import RecordAnsSection from './_components/RecordAnsSection';
+import { Button } from '@/components/ui/button';
 
 function StartInterview({ params: paramsPromise }) {
     const params = React.use(paramsPromise);
@@ -37,8 +38,21 @@ function StartInterview({ params: paramsPromise }) {
                 {/* Video Audio Recording  */}
                 <RecordAnsSection 
                 mockInterviewQuestion={mockInterviewQuestion}
-                activeQuestionIndex={activeQuestionIndex}/>
+                activeQuestionIndex={activeQuestionIndex}
+                interviewData={interviewData}/>
 
+            </div>
+            <div className='flex justify-end gap-6'>
+            {activeQuestionIndex>0 && 
+            <Button onClick={()=>{
+                setactiveQuestionIndex(activeQuestionIndex-1)
+            }}>Previous Question</Button>}
+            {activeQuestionIndex!=mockInterviewQuestion?.length-1 && 
+            <Button onClick={()=>{
+                setactiveQuestionIndex(activeQuestionIndex+1)
+            }}>Next Question</Button>}
+            {activeQuestionIndex==mockInterviewQuestion?.length-1 && 
+            <Button>End Interview</Button>}
             </div>
         </div>
     )

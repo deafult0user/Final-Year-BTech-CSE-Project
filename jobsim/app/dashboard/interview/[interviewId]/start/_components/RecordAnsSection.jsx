@@ -6,9 +6,15 @@ import Webcam from 'react-webcam';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { toast } from 'sonner';
 import { chatSession } from '@/utils/GeminiAiModel';
+import { UserAnswer } from '@/utils/schema';
+import { useUser } from '@clerk/nextjs';
+import moment from 'moment';
+import { db } from '@/utils/db';
 
-function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex }) {
+function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex, interviewData }) {
     const [userAnswer, setUserAnswer] = useState('');
+    const { user } = useUser(); //to get email id
+
     const {
         transcript,
         listening,
@@ -45,19 +51,19 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex }) {
         toast("Recording stopped.", { position: "bottom-center" });
     };
 
-    const saveUserAnswer =  async() => {
-        stopRecording();
+    const saveUserAnswer = async () => {
+        // stopRecording();
         if (userAnswer.trim().length < 10) {
             toast.error('Answer must be at least 10 characters. Please try again.', {
                 position: "bottom-center",
             });
             return;
         }
-        toast.success('Answer saved successfully!', { position: "bottom-center" });
-        console.log('Final Answer:', userAnswer);
+
         // const feedbackPrompt = "Question:"+mockInterviewQuestion[activeQuestionIndex]?.question+"User Answer: "+userAnswer
         // +", Depends on question and user answer please give us rating for answer and feedback as area of improvement in just 3 to 4 lines to improve it"+
         // "in JSON format with rating field and feedback field."
+        console.log(mockInterviewQuestion)
         const feedbackPrompt = `
                 Given the following:
                 - Question: ${mockInterviewQuestion[activeQuestionIndex]?.question}
@@ -68,11 +74,28 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex }) {
                 2. A concise feedback under the field "feedback", highlighting areas of improvement in 3 to 4 sentences.
 
                 Format the response as a JSON object with the fields "rating" and "feedback".`;
+
+                
         const feedbackResult = await chatSession.sendMessage(feedbackPrompt);
         const MockJsonResponse = (feedbackResult.response.text()).replace('```json', '').replace('```', '');
         console.log(MockJsonResponse);
+        const JsonFeedbackResp = JSON.parse(MockJsonResponse)
+        // console.log(interviewData?.mockId)
+        const resp = await db.insert(UserAnswer).values({
+            mockIdRef: interviewData?.mockId,
+            question: mockInterviewQuestion[activeQuestionIndex]?.question,
+            correctAns: mockInterviewQuestion[activeQuestionIndex]?.answer_example,
+            userAns: userAnswer,
+            feedback: JsonFeedbackResp?.feedback,
+            rating: JsonFeedbackResp?.rating,
+            userEmail: user?.primaryEmailAddress?.emailAddress,
+            createdAt: moment().format('DD-MM-yyyy'),
+        })
+        if (resp) {
+            toast.success('Answer saved successfully!', { position: "bottom-center" });
+            console.log('Final Answer:', userAnswer);
+        }
         // setjsonResp(MockJsonResponse);
-
     };
 
     return (
