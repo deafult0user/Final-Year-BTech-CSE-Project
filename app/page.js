@@ -207,8 +207,9 @@ export default function Home() {
         <footer className="py-8 text-center bg-gray-800 text-gray-300">
           <p>
             &copy; {new Date().getFullYear()}{" "}
-            <span className="text-indigo-400">JobSim AI</span>. All rights reserved.
+            <span className="text-indigo-400">JobSim AI</span>. All rights reserved.<br/>Made by <Link href={'https://anuragoyalportfolio.netlify.app/'}><strong>Anurag Goyal</strong></Link> & <Link href={'https://lavishasaroha.netlify.app/'}><strong>Lavisha</strong></Link>
           </p>
+      
         </footer>
       </main>
     </>
