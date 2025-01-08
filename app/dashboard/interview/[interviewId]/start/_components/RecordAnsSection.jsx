@@ -84,7 +84,7 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex, intervie
         const resp = await db.insert(UserAnswer).values({
             mockIdRef: interviewData?.mockId,
             question: mockInterviewQuestion[activeQuestionIndex]?.question,
-            correctAns: mockInterviewQuestion[activeQuestionIndex]?.answer_example,
+            correctAns: mockInterviewQuestion[activeQuestionIndex]?.answer,
             userAns: userAnswer,
             feedback: JsonFeedbackResp?.feedback,
             rating: JsonFeedbackResp?.rating,

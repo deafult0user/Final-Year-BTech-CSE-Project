@@ -45,7 +45,8 @@ function AddNewInterview() {
         const result = await chatSession.sendMessage(InputPrompt);
         const MockJsonResponse = (result.response.text()).replace('```json', '').replace('```', '');
         // console.log(JSON.parse(MockJsonResponse));  
-        setjsonResp(MockJsonResponse);   //string format
+        setjsonResp(MockJsonResponse); 
+        console.log(MockJsonResponse)  //string format
         setLoading(false);
         const response = await db.insert(MockInterview).values({
             mockId: uuidv4(),
