@@ -64,190 +64,73 @@ function AddNewInterview() {
         }
 
     }
-
-    // return (
-    //     <div>
-    //         <div className='p-8 border-2 border-dashed border-gray-300 rounded-2xl bg-white shadow-md hover:shadow-2xl hover:scale-105 cursor-pointer transition-all ' onClick={() => setOpenDialog(true)}>
-    //             <h2 className='font-bold text-lg text-center text-gray-700'>+ Add New</h2>
-    //         </div>
-    //         <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-    //             <DialogContent className="max-w-2xl p-8 rounded-lg shadow-lg bg-white">
-    //                 <DialogHeader className="mb-6">
-    //                     <DialogTitle className="text-3xl font-semibold text-gray-800">
-    //                         Tell us more about your job profile
-    //                     </DialogTitle>
-    //                     <DialogClose className="absolute right-4 top-4 p-2 rounded-full bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
-    //                         <X className="h-5 w-5 text-gray-700" />
-    //                         <span className="sr-only">Close</span>
-    //                     </DialogClose>
-    //                 </DialogHeader>
-
-
-    //                 <DialogDescription>
-    //                     <div className="space-y-6">
-    //                         <form onSubmit={onSubmit}>
-
-    //                             <div>
-    //                                 <Label className="block text-lg font-medium text-gray-700 mb-2">
-    //                                     Job Position
-    //                                 </Label>
-    //                                 <Input
-    //                                     placeholder="Enter your job title (e.g., Software Engineer)"
-    //                                     required
-    //                                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-    //                                     onChange={(event) => setJobPosition(event.target.value)}
-    //                                 />
-    //                             </div>
-
-
-    //                             <div>
-    //                                 <Label className="block text-lg font-medium text-gray-700 mb-2">
-    //                                     Job Description
-    //                                 </Label>
-    //                                 <Textarea
-    //                                     placeholder="Provide a brief description of your job role"
-    //                                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
-    //                                     required
-    //                                     rows={4}
-    //                                     onChange={(event) => setJobDesc(event.target.value)}
-    //                                 />
-    //                             </div>
-
-
-    //                             <div>
-    //                                 <Label className="block text-lg font-medium text-gray-700 mb-2">
-    //                                     Years of Experience
-    //                                 </Label>
-    //                                 <Input
-    //                                     placeholder="Enter your years of experience (e.g., 2)"
-    //                                     min="0"
-    //                                     max="20"
-    //                                     type="number"
-    //                                     required
-    //                                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-    //                                     onChange={(event) => setJobExp(event.target.value)}
-    //                                 />
-    //                             </div>
-
-    //                             {/* Submit Button */}
-    //                             <div className="flex justify-end">
-    //                                 <Button
-    //                                     type="submit"
-    //                                     disabled={loading}
-    //                                     className="mt-7 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-500 focus:outline-none transition-all"
-    //                                 >
-    //                                     {loading ?
-    //                                         <>
-    //                                             <LoaderPinwheel className='animate-spin' />
-    //                                         </>
-    //                                         : 'Submit'
-    //                                     }
-    //                                 </Button>
-    //                             </div>
-    //                         </form>
-    //                     </div>
-    //                     <motion.div></motion.div>
-    //                 </DialogDescription>
-    //             </DialogContent>
-    //         </Dialog>
-    //     </div>
-    // )
     return (
         <div>
-            {/* Card for opening the dialog */}
             <motion.div 
                 initial={{ scale: 1, opacity: 0.8 }}
-                whileHover={{ scale: 1.15, opacity: 1 }}
-                whileTap={{ scale: 1}}
-                className="p-8 w-full rounded-xl bg-gradient-to-bl from-green-400 via-teal-500 to-blue-600 shadow-md hover:shadow-xl cursor-pointer transition-transform"
+                whileHover={{ scale: 1.05, opacity: 1 }}
+                whileTap={{ scale: 0.98 }}
+                className="p-6 w-full rounded-lg bg-blue-500 shadow-lg hover:shadow-xl cursor-pointer transition-transform"
                 onClick={() => setOpenDialog(true)}
-                // animate={{ rotate: 360, scale: 1 }}
-                transition={{
-                    type: "tween",
-                    stiffness: 260,
-                    damping: 20
-                }}
             >
-                <h2 className="font-extrabold text-lg text-center text-white">+ Add Your Details</h2>
+                <h2 className="font-bold text-lg text-center text-white">+ Add Your Details</h2>
             </motion.div>
 
-            {/* Dialog Box */}
             <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-                <DialogContent className="max-w-2xl p-8 rounded-lg shadow-lg bg-white">
-                    <DialogHeader className="mb-6">
-                        <DialogTitle className="text-3xl font-semibold text-gray-800">
+                <DialogContent className="max-w-2xl p-8 rounded-lg bg-white shadow-md">
+                    <DialogHeader>
+                        <DialogTitle className="text-2xl font-semibold text-gray-800 mb-2">
                             Tell us more about your job profile
                         </DialogTitle>
-                        <DialogClose >
-                            {/* <X className="h-5 w-5 text-gray-700" /> */}
-                            {/* <span className="sr-only">Close</span> */}
-                        </DialogClose>
+                        <DialogClose />
                     </DialogHeader>
 
-
                     <DialogDescription>
-                        <div className="space-y-6">
-                            <form onSubmit={onSubmit}>
+                        <form onSubmit={onSubmit} className="space-y-6">
+                            <div>
+                                <Label className="text-lg text-gray-700">Job Position</Label>
+                                <Input
+                                    placeholder="e.g., Software Engineer"
+                                    required
+                                    className="mt-1"
+                                    onChange={(e) => setJobPosition(e.target.value)}
+                                />
+                            </div>
 
-                                <div>
-                                    <Label className="block text-lg font-medium text-gray-700 mb-2">
-                                        Job Position
-                                    </Label>
-                                    <Input
-                                        placeholder="Enter your job title (e.g., Software Engineer)"
-                                        required
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                        onChange={(event) => setJobPosition(event.target.value)}
-                                    />
-                                </div>
+                            <div>
+                                <Label className="text-lg text-gray-700">Job Description</Label>
+                                <Textarea
+                                    placeholder="Brief description of your job role"
+                                    required
+                                    rows={4}
+                                    className="mt-1"
+                                    onChange={(e) => setJobDesc(e.target.value)}
+                                />
+                            </div>
 
+                            <div>
+                                <Label className="text-lg text-gray-700">Years of Experience</Label>
+                                <Input
+                                    placeholder="e.g., 2"
+                                    min="0"
+                                    max="20"
+                                    type="number"
+                                    required
+                                    className="mt-1"
+                                    onChange={(e) => setJobExp(e.target.value)}
+                                />
+                            </div>
 
-                                <div>
-                                    <Label className="block text-lg font-medium text-gray-700 mb-2">
-                                        Job Description
-                                    </Label>
-                                    <Textarea
-                                        placeholder="Provide a brief description of your job role"
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
-                                        required
-                                        rows={4}
-                                        onChange={(event) => setJobDesc(event.target.value)}
-                                    />
-                                </div>
-
-
-                                <div>
-                                    <Label className="block text-lg font-medium text-gray-700 mb-2">
-                                        Years of Experience
-                                    </Label>
-                                    <Input
-                                        placeholder="Enter your years of experience (e.g., 2)"
-                                        min="0"
-                                        max="20"
-                                        type="number"
-                                        required
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                        onChange={(event) => setJobExp(event.target.value)}
-                                    />
-                                </div>
-
-                                {/* Submit Button */}
-                                <div className="flex justify-end">
-                                    <Button
-                                        type="submit"
-                                        disabled={loading}
-                                        className="mt-7 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-500 focus:outline-none transition-all"
-                                    >
-                                        {loading ?
-                                            <>
-                                                <LoaderPinwheel className='animate-spin' />
-                                            </>
-                                            : 'Submit'
-                                        }
-                                    </Button>
-                                </div>
-                            </form>
-                        </div>
+                            <div className="flex justify-end">
+                                <Button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all"
+                                >
+                                    {loading ? <LoaderPinwheel className='animate-spin' /> : 'Submit'}
+                                </Button>
+                            </div>
+                        </form>
                     </DialogDescription>
                 </DialogContent>
             </Dialog>

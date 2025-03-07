@@ -4,7 +4,6 @@ import Header from '../dashboard/_components/Header';
 function Upgrade() {
     return (
         <>
-        <Header/>
         <div className=" max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
             <div className="justify-center grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 md:gap-12">
                 {/* Free Plan */}

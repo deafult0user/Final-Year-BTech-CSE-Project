@@ -1,37 +1,10 @@
-// import { Button } from '@/components/ui/button'
-// import { useRouter } from 'next/navigation'
-// import React from 'react'
-
-// function InterviewItemCard({interview}) {
-//     const router = useRouter();
-//     const onStart=()=>{
-//         router.push('dashboard/interview/'+interview?.mockId)
-//     }
-
-//     const onFeedback = ()=>{
-//         router.push('dashboard/interview/'+interview?.mockId+'/feedback')
-//     }
-
-//   return (
-//     <div className='border shadow-sm rounded-lg p-3'>
-//         <h2 className='font-bold text-primary'>{interview?.jobPosition}</h2>
-//         <h2 className='text-sm text-gray-600'>{interview?.jobExperience} Years of Experience</h2>
-//         <h2 className='text-xs text-gray-400'>Created At: {interview?.createdAt}</h2>
-//         <div className='flex justify-between mt-2 gap-5'>
-//             <Button size="sm" variant="outline" className='w-full' onClick={onFeedback}>Feedback</Button>
-//             <Button size="sm" variant="outline" className='w-full' onClick={onStart}>Start</Button>
-//         </div>
-//     </div>
-//   ) 
-// }
-
-// export default InterviewItemCard
-
-
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Calendar, Briefcase } from 'lucide-react';
 
 function InterviewItemCard({ interview }) {
     const router = useRouter();
@@ -45,30 +18,38 @@ function InterviewItemCard({ interview }) {
     };
 
     return (
-        <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="p-5 bg-gradient-to-bl from-pink-200 via-pink-100 to-yellow-100 shadow-lg rounded-lg border border-gray-200"
-        >
-            <h2 className="font-bold text-lg text-gray-800">{interview?.jobPosition}</h2>
-            <p className="text-sm text-gray-600">{interview?.jobExperience} Years of Experience</p>
-            <p className="text-xs text-gray-400">Created At: {interview?.createdAt}</p>
-            <div className="flex justify-between mt-4 gap-3">
-                <motion.button
-                    whileHover={{ backgroundColor: '#f0f0f0' }}
-                    onClick={onFeedback}
-                    className="w-full py-2 bg-gray-100 text-gray-800 rounded-md border border-gray-300 text-sm font-medium hover:shadow"
-                >
-                    Feedback
-                </motion.button>
-                <motion.button
-                    whileHover={{ backgroundColor: '#e5f6ff' }}
-                    onClick={onStart}
-                    className="w-full py-2 bg-blue-100 text-blue-800 rounded-md border border-blue-300 text-sm font-medium hover:shadow"
-                >
-                    Start
-                </motion.button>
-            </div>
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Card className="p-6 shadow-md border rounded-xl hover:shadow-lg transition-all">
+                <div className="flex flex-col items-center space-y-3">
+                    <div className="p-2 bg-blue-100 rounded-full">
+                        <Briefcase className="h-6 w-6 text-blue-600" />
+                    </div>
+                    <h2 className="text-xl font-semibold text-gray-800">
+                        {interview?.jobPosition}
+                    </h2>
+                </div>
+                <hr className="my-4" />
+                <CardContent className="space-y-2 text-center sm: flex-col">
+                    <p className="flex items-center justify-center gap-1 text-sm text-gray-500">
+                        <Calendar className="h-4 w-4" />
+                        Created At: {interview?.createdAt}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                        Experience: {interview?.jobExperience} Years
+                    </p>
+                    <Badge variant="outline" className="mt-2 bg-blue-50 text-blue-600">
+                        In Progress
+                    </Badge>
+                    <div className="flex flex-col gap-3 mt-6">
+                        <Button onClick={onFeedback} variant="outline" className="w-full">
+                            Feedback
+                        </Button>
+                        <Button onClick={onStart} className="w-full bg-blue-500 text-white">
+                            Start
+                        </Button>
+                    </div>
+                </CardContent>
+            </Card>
         </motion.div>
     );
 }
