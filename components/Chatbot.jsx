@@ -17,7 +17,7 @@ const Chatbot = () => {
 
     useEffect(() => {
         const handleScroll = () => {
-            setShowChatIcon(window.scrollY > 200);
+            setShowChatIcon(window.scrollY > 150);
         };
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
@@ -46,13 +46,15 @@ const Chatbot = () => {
                         transition={{ duration: 0.2 }}
                         className='fixed bottom-6 right-6 z-50'
                     >
+                        
                         <Button
                             onClick={toggleChat}
                             size='icon'
-                            className='rounded-full p-7 shadow-2xl bg-black hover:scale-105 transition-transform'
+                            className='animate-spin rounded-full p-7 shadow-2xl bg-blue-950 hover:scale-105 transition-transform'
                         >
                             {isChatOpen ? <ChevronDown className='size-12' /> : <MessageCircle className='size-1' />}
                         </Button>
+                        
                     </motion.div>
                 )}
             </AnimatePresence>

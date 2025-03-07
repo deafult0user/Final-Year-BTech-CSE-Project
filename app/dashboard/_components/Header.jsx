@@ -95,6 +95,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
+import AddNewInterview from "./AddNewInterview";
 // import { checkUser } from "@/lib/checkUser";
 
 export default async function Header() {
@@ -113,7 +114,7 @@ export default async function Header() {
   // await checkUser();
 
   return (
-    <header className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-800 via-blue-600 to-blue-500 shadow-xl relative">
+    <header className="flex items-center justify-between p-4 bg-gradient-to-r from-black via-blue-950 to-blue-900 shadow-xl relative">
       <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/">
           <Image
@@ -158,7 +159,7 @@ export default async function Header() {
                     ATS Checker
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
+                {/* <DropdownMenuItem asChild>
                   <Link
                     href="/ai-cover-letter"
                     className="flex items-center gap-2"
@@ -166,11 +167,11 @@ export default async function Header() {
                     <PenBox className="h-4 w-4" />
                     Cover Letter
                   </Link>
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
                 <DropdownMenuItem asChild>
-                  <Link href="/interview" className="flex items-center gap-2">
+                  <Link href='/upgrade' className="flex items-center gap-2">
                     <GraduationCap className="h-4 w-4" />
-                    Interview Prep
+                    Pricing
                   </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -180,7 +181,7 @@ export default async function Header() {
           <SignedOut>
             <Button className="hidden md:inline-flex items-center gap-2">
               <SignUpButton>
-                Get Started
+                Sign Up
               </SignUpButton>
             </Button>
             <SignInButton>
