@@ -6,7 +6,7 @@ import DasboardLayout from "./dashboard/layout";
 import { Toaster } from '@/components/ui/sonner';
 import Link from 'next/link';
 import Header from './dashboard/_components/Header';
-import Footer from '@/components/Footer';
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
       <html lang="en">
         <body>
           {/* Header */}
-          <Header />
+          {/* <Header /> */}
           <main>{children}</main>
           <Toaster />
           {/* Footer */}

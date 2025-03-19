@@ -6,11 +6,14 @@ import AddNewInterview from './_components/AddNewInterview';
 import InterviewList from './_components/InterviewList';
 import { motion, MotionConfig } from 'framer-motion';
 import Chatbot from '@/components/Chatbot';
+import Header from './_components/Header';
 
 
 function Dashboard() {
   const { user } = useUser();
   return (
+    <>
+    {/* <div><Header/></div> */}
     <div className="p-10 bg-gray-50 min-h-screen">
       {/* Header Section */}
       <div className="flex flex-col justify-between  mb-10">
@@ -36,7 +39,7 @@ function Dashboard() {
       </div>
       {/* <Chatbot/> */}
       <Chatbot/>
-    </div>
+    </div></>
   );
 }
 

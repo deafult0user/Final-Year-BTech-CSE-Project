@@ -73,10 +73,16 @@ body {
 
 @layer utilities {
   .gradient {
-    @apply bg-gradient-to-b from-blue-950 via-blue-900 to-black;
+    @apply bg-gradient-to-b from-blue-950 via-blue-900 to-gray-950;
   }
   .gradient-title {
     @apply gradient font-extrabold tracking-tighter text-transparent bg-clip-text pb-2 pr-2;
+  }
+  .gradient-footer {
+    @apply bg-gradient-to-b from-gray-950 via-black to-black;
+  }
+  .gradient-head {
+    @apply bg-white font-extrabold tracking-tighter text-transparent bg-clip-text pb-2 pr-2;
   }
 }
 

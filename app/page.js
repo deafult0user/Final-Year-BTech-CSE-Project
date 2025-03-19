@@ -4,12 +4,25 @@ import Link from "next/link";
 import Chatbot from "@/components/Chatbot";
 import { ArrowRight } from "lucide-react";
 import { howItWorks } from "@/lib/howItWorks";
+import Footer from '@/components/Footer';
+import Header from "./dashboard/_components/Header";
 
 export default function Home() {
   return (
     <div>
+      <Header/>
       <div className="grid-background">
-
+        {/* <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className=" absolute inset-0 w-full h-full object-cover z-0"
+        >
+          <source src={'/video.mp4'} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div className="grid-background"></div>       */}
       </div>
       <section className="w-full pt-36 md:pt-48 pb-10">
         <div className="space-y-6 text-center">
@@ -38,6 +51,36 @@ export default function Home() {
           </div>
         </div>
       </section>
+      
+      {/* <section className="relative w-full pt-36 md:pt-48 pb-10">
+        
+        <div className="relative z-10 bg-black/50 backdrop-blur-sm w-full h-full flex flex-col items-center justify-center text-center px-4">
+          <div className="space-y-6 mx-auto">
+            <h1 className="text-5xl font-bold md:text-6xl lg:text-7xl xl:text-8xl gradient-title animate-gradient">
+              Ace Your Next
+              <br />
+              Interview with Confidence
+            </h1>
+            <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl">
+              Simulate real interview scenarios with our AI-powered platform.
+              Personalized practice to land your dream job.
+            </p>
+          </div>
+          <div className="flex justify-center space-x-4">
+            <Link href="/dashboard">
+              <Button size="lg" className="px-8">
+                Get Started
+              </Button>
+            </Link>
+            <Link href="">
+              <Button size="lg" variant="outline" className="px-8">
+                Documentation
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section> */}
+
 
       <section className="w-full py-12 md:py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
@@ -87,9 +130,9 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <Footer/>
-      <Chatbot/>
-      
+      <Footer />
+      <Chatbot />
+
     </div>
   );
 

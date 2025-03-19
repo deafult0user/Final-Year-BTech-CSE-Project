@@ -32,7 +32,7 @@ const FooterLink = ({ to, children }) => {
 const Footer = () => {
   return (
     <>
-    <div className="w-full bg-black text-gray-300 hover:text-gray-100 py-8 container mx-auto px-4 md:px-8">
+    <div className="w-full gradient-footer text-gray-300 hover:text-gray-100 py-8 container mx-auto px-4 md:px-8">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         <div>
           <h3 className="font-bold text-lg mb-4">Quick Links</h3>

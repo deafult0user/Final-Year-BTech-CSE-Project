@@ -17,7 +17,7 @@ const Chatbot = () => {
 
     useEffect(() => {
         const handleScroll = () => {
-            setShowChatIcon(window.scrollY > 150);
+            setShowChatIcon(true);
         };
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
@@ -68,9 +68,9 @@ const Chatbot = () => {
                         transition={{ duration: 0.2 }}
                         className='fixed bottom-24 right-6 z-50 w-[90%] md:w-[420px] lg:w-[450px]'
                     >
-                        <Card className='border shadow-xl rounded-xl bg-white/95 backdrop-blur-lg'>
-                            <CardHeader className='flex flex-row items-center justify-between bg-gradient-to-r from-indigo-700 to-blue-600 text-white rounded-t-xl p-4'>
-                                <CardTitle className='text-lg font-semibold'>JobSIM AI Chat</CardTitle>
+                        <Card className='border shadow-xl rounded-xl bg-white/45 backdrop-blur-lg'>
+                            <CardHeader className='flex flex-row items-center justify-between bg-gradient-to-r from-black to-blue-950 text-white rounded-t-xl p-4'>
+                                <CardTitle className='text-lg font-semibold align-centre'>JOBSim Chatbot</CardTitle>
                                 <Button
                                     onClick={toggleChat}
                                     size='sm'
@@ -86,8 +86,8 @@ const Chatbot = () => {
                                         <div key={index} className={`mb-3 flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
                                             <div
                                                 className={`p-3 max-w-[80%] rounded-lg shadow-md text-sm transition-all duration-200 ${message.role === "user" ?
-                                                    'bg-blue-600 text-white rounded-br-none' :
-                                                    'bg-gray-200 text-gray-900 rounded-bl-none'}`}
+                                                    'bg-blue-900 text-white rounded-br-none' :
+                                                    'bg-white text-gray-900 rounded-bl-none'}`}
                                             >
                                                 <ReactMarkdown children={message.content} remarkPlugins={[remarkGfm]} />
                                             </div>
