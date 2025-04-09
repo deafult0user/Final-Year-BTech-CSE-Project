@@ -9,10 +9,13 @@ import { useUser } from '@clerk/nextjs';
 import moment from 'moment';
 import { db } from '@/utils/db';
 import { Toaster } from '@/components/ui/sonner';
+import { eq, and } from 'drizzle-orm';
+import { toast } from 'sonner';
 
 function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex, interviewData }) {
     const [userAnswer, setUserAnswer] = useState('');
     const [isRecording, setIsRecording] = useState(false);
+    const [showCam, setShowCam] = useState(true);
     const recognitionRef = useRef(null);
     const { user } = useUser();
 
@@ -56,18 +59,19 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex, intervie
     const saveUserAnswer = async () => {
         stopRecording();
         if (userAnswer.trim().length < 10) {
+            toast.warning("Answer too short! Try again.");
             return;
         }
 
         try {
-            const existingAnswer =  db
-                .select()
-                .from(UserAnswer)
-                .where({
-                    mockIdRef: interviewData?.mockId,
-                    question: mockInterviewQuestion[activeQuestionIndex]?.question,
-                    userEmail: user?.primaryEmailAddress?.emailAddress,
-                });
+            const existingAnswer = await db
+  .select()
+  .from(UserAnswer)
+  .where(and(
+    eq(UserAnswer.mockIdRef, interviewData?.mockId),
+    eq(UserAnswer.question, mockInterviewQuestion[activeQuestionIndex]?.question),
+    eq(UserAnswer.userEmail, user?.primaryEmailAddress?.emailAddress)
+  ));
 
             const feedbackPrompt = `
                 Given the following:
@@ -78,19 +82,24 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex, intervie
                 1. A numerical rating (1 to 5) under the field "rating".
                 2. A concise feedback under the field "feedback" in 3 to 4 sentences.
 
-                Format the response as a JSON object with the fields "rating" and "feedback".`;
+                Format the response as a JSON object with the fields "rating" and "feedback".
+            `;
 
             const feedbackResult = await chatSession.sendMessage(feedbackPrompt);
             const feedbackText = await feedbackResult.response.text();
-            const cleanJson = feedbackText.replace('```json', '').replace('```', '').trim();
+            const cleanJson = feedbackText.replace(/```json|```/g, '').trim();
 
             let JsonFeedbackResp;
             try {
                 JsonFeedbackResp = JSON.parse(cleanJson);
+                if (!JsonFeedbackResp?.feedback || !JsonFeedbackResp?.rating) throw new Error();
             } catch (error) {
-                console.error("Error parsing feedback JSON:", error);
+                console.error("Invalid AI feedback:", feedbackText);
+                toast.error("AI feedback could not be parsed.");
                 return;
             }
+
+            // setAiFeedback(JsonFeedbackResp);
 
             if (existingAnswer.length > 0) {
                 await db.update(UserAnswer).set({
@@ -98,7 +107,7 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex, intervie
                     feedback: JsonFeedbackResp.feedback,
                     rating: JsonFeedbackResp.rating,
                     createdAt: moment().format('DD-MM-yyyy'),
-                }).where({ id: existingAnswer[0].id });
+                }).where(eq(UserAnswer.id, existingAnswer[0].id));
             } else {
                 await db.insert(UserAnswer).values({
                     mockIdRef: interviewData?.mockId,
@@ -111,8 +120,11 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex, intervie
                     createdAt: moment().format('DD-MM-yyyy'),
                 });
             }
+
+            toast.success("Answer saved and evaluated!");
         } catch (error) {
             console.error("Error saving answer:", error);
+            toast.error("Error saving your answer.");
         }
     };
 
@@ -120,10 +132,15 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex, intervie
         <div className="flex flex-col items-center justify-center bg-gray-50 py-8 px-4">
             <Toaster />
             <h1 className="text-3xl font-bold text-gray-700 mb-3">Record Your Answer</h1>
+
             <div className="relative w-full max-w-lg bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="relative">
-                    <Webcam mirrored style={{ width: "100%", height: "300px", objectFit: "cover" }} />
-                    {isRecording && <div className="absolute top-4 left-4 h-4 w-4 bg-red-500 rounded-full animate-pulse"></div>}
+                    {showCam && (
+                        <Webcam mirrored style={{ width: "100%", height: "300px", objectFit: "cover" }} />
+                    )}
+                    {isRecording && (
+                        <div className="absolute top-4 left-4 h-4 w-4 bg-red-500 rounded-full animate-pulse"></div>
+                    )}
                 </div>
                 <div className="p-4 bg-gray-100">
                     <textarea
@@ -135,6 +152,7 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex, intervie
                     ></textarea>
                 </div>
             </div>
+
             <div className="mt-6 flex flex-col md:flex-row gap-4">
                 <Button
                     className={`px-6 py-3 text-white rounded-md shadow transition-transform transform ${isRecording ? 'bg-red-500 hover:bg-red-600 scale-105' : 'bg-blue-500 hover:bg-blue-600 scale-100'}`}
@@ -152,6 +170,7 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex, intervie
                         </>
                     )}
                 </Button>
+
                 <Button
                     className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-md shadow transition-transform transform hover:scale-105"
                     onClick={saveUserAnswer}
@@ -159,7 +178,15 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex, intervie
                     <SaveIcon className="mr-2" />
                     Save Answer
                 </Button>
-            </div>
+
+                <Button
+                    className="px-6 py-3 bg-gray-400 hover:bg-gray-500 text-white rounded-md shadow transition-transform transform hover:scale-105"
+                    onClick={() => setShowCam(!showCam)}
+                >
+                    <WebcamIcon className="mr-2" />
+                    {showCam ? "Turn Off Camera" : "Turn On Camera"}
+                </Button>
+            </div>            
         </div>
     );
 }
