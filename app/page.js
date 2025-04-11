@@ -36,7 +36,7 @@ export default function Home() {
               <br />
               Interview with Confidence
             </h1>
-            <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl">
+            <p className="mx-auto max-w-[600px] text-bg-black md:text-xl">
             Simulate real interview scenarios with our AI-powered platform.
             Personalized practice to land your dream job.
             </p>

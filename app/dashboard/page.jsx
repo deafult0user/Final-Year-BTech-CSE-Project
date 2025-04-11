@@ -5,7 +5,7 @@ import React from 'react';
 import AddNewInterview from './_components/AddNewInterview';
 import InterviewList from './_components/InterviewList';
 import Chatbot from '@/components/Chatbot';
-import Header from './_components/Header';
+import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 
