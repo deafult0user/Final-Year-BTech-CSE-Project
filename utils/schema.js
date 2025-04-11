@@ -8,7 +8,8 @@ export const MockInterview = pgTable('Jobsim_ai',{
     jobExperience:varchar('jobExperience').notNull(),
     createdBy:varchar('createdBy').notNull(),
     createdAt:varchar('createdAt'),
-    mockId:varchar('mockId').notNull()
+    mockId:varchar('mockId').notNull(),
+    difficultyLevel:varchar('difficultyLevel').notNull()
 })
 
 export const UserAnswer = pgTable('UserAnswer',{

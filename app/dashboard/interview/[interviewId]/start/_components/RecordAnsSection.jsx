@@ -80,14 +80,14 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex, intervie
         Given the following:
         - Question: ${mockInterviewQuestion[activeQuestionIndex]?.question}
         - User Answer: ${userAnswer}
+        - Difficulty Level: ${interviewData?.difficultyLevel}
 
-        Please evaluate the user's answer based on the question and provide:
-        1. A numerical rating (1 to 5) under the field "rating".
-        2. A concise feedback under the field "feedback" in 3 to 4 sentences.
+        Please evaluate the user's answer based on the question and difficulty level also provide:
+        1. A numerical rating (1 to 10) under the field "rating".
+        2. A concise feedback under the field "feedback" in 1 to 2 sentences.
 
         Format the response as a JSON object with the fields "rating" and "feedback".
       `;
-
       const feedbackResult = await chatSession.sendMessage(feedbackPrompt);
       const feedbackText = await feedbackResult.response.text();
       const cleanJson = feedbackText.replace(/```json|```/g, "").trim();
@@ -135,22 +135,32 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex, intervie
       <div className="w-full max-w-3xl rounded-2xl overflow-hidden shadow-lg bg-white">
         {showCam && (
           <div className="relative">
+          {showCam ? (
             <Webcam
               mirrored
-              className="w-full h-[300px] object-cover rounded-t-2xl"
+              className="w-full h-[350px] object-cover rounded-t-2xl align-middle"
             />
-            {isRecording && (
-              <div className="absolute top-4 left-4 h-4 w-4 bg-red-500 rounded-full animate-pulse border-2 border-white" />
-            )}
-          </div>
+          ) : (
+            
+            <img
+              src="/dummy.jpg"
+              alt="Camera Off"
+              className="w-full h-[350px] object-cover rounded-t-2xl align-middle mb-48"
+            />
+          )}
+          {isRecording && showCam && (
+            <div className="absolute top-4 left-4 h-4 w-4 bg-red-500 rounded-full animate-pulse border-2 border-white" />
+          )}
+        </div>
+        
         )}
-        <div className="p-5 bg-gray-100">
+        <div className="p-3 bg-gray-100">
           <textarea
             readOnly
             value={userAnswer}
             placeholder="Your transcript will appear here..."
             className="w-full p-3 bg-white border border-gray-300 rounded-md shadow-sm resize-none text-sm focus:ring focus:ring-blue-300"
-            rows="5"
+            rows="3"
           />
         </div>
       </div>
@@ -187,198 +197,3 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex, intervie
 }
 
 export default RecordAnsSection;
-
-// "use client";
-// import { Button } from '@/components/ui/button';
-// import { Disc2Icon, MicIcon, SaveIcon, WebcamIcon } from 'lucide-react';
-// import React, { useEffect, useState, useRef } from 'react';
-// import Webcam from 'react-webcam';
-// import { chatSession } from '@/utils/GeminiAiModel';
-// import { UserAnswer } from '@/utils/schema';
-// import { useUser } from '@clerk/nextjs';
-// import moment from 'moment';
-// import { db } from '@/utils/db';
-// import { Toaster } from '@/components/ui/sonner';
-// import { eq, and } from 'drizzle-orm';
-// import { toast } from 'sonner';
-
-// function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex, interviewData }) {
-//     const [userAnswer, setUserAnswer] = useState('');
-//     const [isRecording, setIsRecording] = useState(false);
-//     const [showCam, setShowCam] = useState(true);
-//     const recognitionRef = useRef(null);
-//     const { user } = useUser();
-
-//     useEffect(() => {
-//         return () => {
-//             if (recognitionRef.current) {
-//                 recognitionRef.current.stop();
-//             }
-//         };
-//     }, []);
-
-//     const startRecording = () => {
-//         setIsRecording(true);
-//         setUserAnswer('');
-//         recognitionRef.current = new window.webkitSpeechRecognition();
-//         recognitionRef.current.continuous = true;
-//         recognitionRef.current.interimResults = true;
-//         recognitionRef.current.lang = "en-US";
-//         recognitionRef.current.maxAlternatives = 3;
-
-//         recognitionRef.current.onresult = (event) => {
-//             let finalTranscript = '';
-//             for (let i = 0; i < event.results.length; i++) {
-//                 if (event.results[i].isFinal) {
-//                     finalTranscript += event.results[i][0].transcript + ' ';
-//                 }
-//             }
-//             setUserAnswer(finalTranscript.trim());
-//         };
-
-//         recognitionRef.current.start();
-//     };
-
-//     const stopRecording = () => {
-//         if (recognitionRef.current) {
-//             recognitionRef.current.stop();
-//         }
-//         setIsRecording(false);
-//     };
-
-//     const saveUserAnswer = async () => {
-//         stopRecording();
-//         if (userAnswer.trim().length < 10) {
-//             toast.warning("Answer too short! Try again.");
-//             return;
-//         }
-
-//         try {
-//             const existingAnswer = await db
-//   .select()
-//   .from(UserAnswer)
-//   .where(and(
-//     eq(UserAnswer.mockIdRef, interviewData?.mockId),
-//     eq(UserAnswer.question, mockInterviewQuestion[activeQuestionIndex]?.question),
-//     eq(UserAnswer.userEmail, user?.primaryEmailAddress?.emailAddress)
-//   ));
-
-//             const feedbackPrompt = `
-//                 Given the following:
-//                 - Question: ${mockInterviewQuestion[activeQuestionIndex]?.question}
-//                 - User Answer: ${userAnswer}
-                
-//                 Please evaluate the user's answer based on the question and provide:
-//                 1. A numerical rating (1 to 5) under the field "rating".
-//                 2. A concise feedback under the field "feedback" in 3 to 4 sentences.
-
-//                 Format the response as a JSON object with the fields "rating" and "feedback".
-//             `;
-
-//             const feedbackResult = await chatSession.sendMessage(feedbackPrompt);
-//             const feedbackText = await feedbackResult.response.text();
-//             const cleanJson = feedbackText.replace(/```json|```/g, '').trim();
-
-//             let JsonFeedbackResp;
-//             try {
-//                 JsonFeedbackResp = JSON.parse(cleanJson);
-//                 if (!JsonFeedbackResp?.feedback || !JsonFeedbackResp?.rating) throw new Error();
-//             } catch (error) {
-//                 console.error("Invalid AI feedback:", feedbackText);
-//                 toast.error("AI feedback could not be parsed.");
-//                 return;
-//             }
-
-//             // setAiFeedback(JsonFeedbackResp);
-
-//             if (existingAnswer.length > 0) {
-//                 await db.update(UserAnswer).set({
-//                     userAns: userAnswer,
-//                     feedback: JsonFeedbackResp.feedback,
-//                     rating: JsonFeedbackResp.rating,
-//                     createdAt: moment().format('DD-MM-yyyy'),
-//                 }).where(eq(UserAnswer.id, existingAnswer[0].id));
-//             } else {
-//                 await db.insert(UserAnswer).values({
-//                     mockIdRef: interviewData?.mockId,
-//                     question: mockInterviewQuestion[activeQuestionIndex]?.question,
-//                     correctAns: mockInterviewQuestion[activeQuestionIndex]?.answer,
-//                     userAns: userAnswer,
-//                     feedback: JsonFeedbackResp.feedback,
-//                     rating: JsonFeedbackResp.rating,
-//                     userEmail: user?.primaryEmailAddress?.emailAddress,
-//                     createdAt: moment().format('DD-MM-yyyy'),
-//                 });
-//             }
-
-//             toast.success("Answer saved and evaluated!");
-//         } catch (error) {
-//             console.error("Error saving answer:", error);
-//             toast.error("Error saving your answer.");
-//         }
-//     };
-
-//     return (
-//         <div className="flex flex-col items-center justify-center py-8 px-4">
-//             <Toaster />
-//             {/* <h1 className="text-3xl font-bold text-gray-700 mb-3">Record Your Answer</h1> */}
-
-//             <div className="relative w-full max-w-lg bg-white rounded-lg shadow-md overflow-hidden">
-//                 <div className="relative">
-//                     {showCam && (
-//                         <Webcam mirrored style={{ width: "100%", height: "300px", objectFit: "cover" }} />
-//                     )}
-//                     {isRecording && (
-//                         <div className="absolute top-4 left-4 h-4 w-4 bg-red-500 rounded-full animate-pulse"></div>
-//                     )}
-//                 </div>
-//                 <div className="p-4 bg-gray-100">
-//                     <textarea
-//                         readOnly
-//                         value={userAnswer}
-//                         placeholder="Your transcript will appear here..."
-//                         className="w-full p-1 bg-white border border-gray-300 rounded-md shadow-sm resize-none focus:ring focus:ring-blue-300"
-//                         rows="4"
-//                     ></textarea>
-//                 </div>
-//             </div>
-
-//             <div className="p-4 mt-6 flex flex-col md:flex-row gap-4">
-//                 <Button
-//                     className={`px-6 py-3 text-white rounded-md shadow transition-transform transform ${isRecording ? 'bg-red-500 hover:bg-red-600 scale-105' : 'bg-blue-500 hover:bg-blue-600 scale-100'}`}
-//                     onClick={isRecording ? stopRecording : startRecording}
-//                 >
-//                     {isRecording ? (
-//                         <>
-//                             <Disc2Icon className="mr-2" />
-//                             Stop Recording
-//                         </>
-//                     ) : (
-//                         <>
-//                             <MicIcon className="mr-2" />
-//                             Start Recording
-//                         </>
-//                     )}
-//                 </Button>
-
-//                 <Button
-//                     className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-md shadow transition-transform transform hover:scale-105"
-//                     onClick={saveUserAnswer}
-//                 >
-//                     <SaveIcon className="mr-2" />
-//                     Save Answer
-//                 </Button>
-
-//                 <Button
-//                     className="px-6 py-3 bg-gray-400 hover:bg-gray-500 text-white rounded-md shadow transition-transform transform hover:scale-105"
-//                     onClick={() => setShowCam(!showCam)}
-//                 >
-//                     <WebcamIcon className="mr-2" />
-//                     {showCam ? "Turn Off Camera" : "Turn On Camera"}
-//                 </Button>
-//             </div>            
-//         </div>
-//     );
-// }
-
-// export default RecordAnsSection;

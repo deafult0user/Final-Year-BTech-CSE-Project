@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import {Dialog, DialogClose, DialogContent,DialogDescription,DialogHeader, DialogTitle,} from '@/components/ui/dialog';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, } from '@/components/ui/dialog';
 import { LoaderPinwheel } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,14 +27,13 @@ function AddNewInterview() {
     const router = useRouter();
 
     const onSubmit = async (e) => {
-        setLoading(true);
         e.preventDefault();
+        setLoading(true);
         // console.log(Level)
         const InputPrompt = `Job Position:${JobPosition}, Job Description: ${JobDesc}, Years of Experience: ${JobExp}, Based on this information, please generate ${process.env.NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT} interview questions with answers in JSON format at difficulty level: ${Level}`;
         const result = await chatSession.sendMessage(InputPrompt);
         const MockJsonResponse = (result.response.text()).replace('```json', '').replace('```', '');
-        setLoading(false);
-
+        
         const response = await db.insert(MockInterview).values({
             mockId: uuidv4(),
             jsonMockResp: MockJsonResponse,
@@ -42,8 +41,10 @@ function AddNewInterview() {
             jobDesc: JobDesc,
             jobExperience: JobExp,
             createdBy: user?.primaryEmailAddress?.emailAddress,
-            createdAt: moment().format('DD-MM-yyyy')
+            createdAt: moment().format('DD-MM-yyyy'),
+            difficultyLevel: Level
         }).returning({ mockId: MockInterview.mockId });
+        setLoading(false);
 
         if (response) {
             setOpenDialog(false);
@@ -125,7 +126,7 @@ function AddNewInterview() {
                                 <Button
                                     type="submit"
                                     disabled={loading}
-                                    className="px-8 py-3 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition-all"
+                                    className="px-8 py-3  text-white rounded-xl hover:bg-blue-900 transition-all"
                                 >
                                     {loading ? <LoaderPinwheel className='animate-spin' /> : 'Submit'}
                                 </Button>

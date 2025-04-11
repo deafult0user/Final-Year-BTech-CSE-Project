@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { db } from '@/utils/db';
 import { MockInterview } from '@/utils/schema';
 import { eq } from 'drizzle-orm';
-import { Fullscreen, Lightbulb, WebcamIcon } from 'lucide-react';
+import { Lightbulb, WebcamIcon } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
 import Webcam from 'react-webcam';
@@ -14,7 +14,8 @@ function Interview({ params: paramsPromise }) {
     const [interviewData, setinterviewData] = useState({
         jobPosition: '...',
         jobDesc: '...',
-        jobExperience: '...'
+        jobExperience: '...',
+        difficultyLevel:'...'
     });
 
     const [webcamEnable, setwebcamEnable] = useState(false);
@@ -41,10 +42,10 @@ function Interview({ params: paramsPromise }) {
         <div className=" bg-gradient-to-b from-white to-gray-100 flex flex-col items-center py-10 px-5">
 
             <div className="text-center mb-10">
-                <h2 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-4">
+                <h2 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-4 mt-3">
                     Let's Get Started
                 </h2>
-                <p className="text-lg text-gray-600">
+                <p className="text-lg text-gray-600 mb-3">
                     Begin your journey with our AI-powered mock interview system.
                 </p>
             </div>
@@ -63,6 +64,9 @@ function Interview({ params: paramsPromise }) {
                                 </h2>
                                 <h2 className="text-lg font-medium text-gray-700">
                                     <strong>Years of Experience:</strong> {interviewData.jobExperience}
+                                </h2>
+                                <h2 className="text-lg font-medium text-gray-700">
+                                    <strong>Level of Difficulty:</strong> {interviewData.difficultyLevel}
                                 </h2>
                             </>
                         ) : (
@@ -104,7 +108,7 @@ function Interview({ params: paramsPromise }) {
                             />
                             <Button
                                 variant="ghost"
-                                className="w-full mt-5 bg-blue-900 text-white font-medium py-2 px-4 rounded-lg shadow hover:opacity-90"
+                                className="w-full mt-5 bg-blue-900 text-white font-medium px-4 rounded-lg shadow hover:opacity-90"
                                 onClick={() => setwebcamEnable(false)}
                             >
                                 Disable Webcam and Microphone
@@ -112,10 +116,10 @@ function Interview({ params: paramsPromise }) {
                         </>
                     ) : (
                         <>
-                            <WebcamIcon className="h-36 w-36 text-black my-5 p-10 bg-gray-300 rounded-full border border-gray-200" />
+                            <WebcamIcon className="h-36 w-36 text-black my-14 p-10 bg-gray-300 rounded-full border border-gray-200" />
                             <Button
                                 variant="ghost"
-                                className="w-full mt-5 bg-blue-900 text-white font-medium py-2 px-4 rounded-lg shadow hover:opacity-90"
+                                className="w-full mt-5 bg-blue-900 text-white font-medium px-4 rounded-lg shadow hover:opacity-90"
                                 onClick={() => setwebcamEnable(true)}
                             >
                                 Enable Webcam and Microphone

@@ -1,307 +1,163 @@
-// "use client"
-// import { db } from '@/utils/db'
-// import { UserAnswer } from '@/utils/schema'
-// import { eq } from 'drizzle-orm'
-// import React, { useEffect, useState } from 'react';
-// import {
-//     Collapsible,
-//     CollapsibleContent,
-//     CollapsibleTrigger,
-// } from "@/components/ui/collapsible";
-// import { LucideChevronsUpDown } from 'lucide-react';
-// import { Button } from '@/components/ui/button';
-// import { useRouter } from 'next/navigation';
-
-
-// function Feedback({ params: paramsPromise }) {
-//     const params = React.use(paramsPromise);
-//     const [feedbackList, seFeedbackList] = useState([]);
-//     const router = useRouter();
-
-//     useEffect(() => {
-//         GetFeedback();
-//     }, [])
-
-//     const GetFeedback = async () => {
-//         const result = await db.select().from(UserAnswer).where(eq(UserAnswer.mockIdRef, params.interviewId)).orderBy(UserAnswer.id);
-//         console.log(result)
-//         seFeedbackList(result)
-
-//     }
-
-
-//     return (
-//         <div className='p-10'>
-
-//             {feedbackList?.length == 0 ?
-//                 <h2 className='font-bold text-2xl text-gray-500'>No Interview Record Found</h2> :
-//                 <>
-//                     <h2 className='text-3xl font-bold text-green-500'>Congratulations</h2>
-//                     <h2 className='text-2xl font-bold'>Here is your Interview Feedback</h2>
-//                     <h2 className='text-lg text-blue-500 my-3'>Your overall Interview Rating is <strong>7/10</strong></h2>
-
-//                     <h2 className='text-sm text-gray-500'>Find below the interview questions with correct answer, your answer and feedback for improvement.</h2>
-//                     {feedbackList && feedbackList.map((item, index) => (
-//                         <Collapsible key={index} className=''>
-//                             <CollapsibleTrigger className='p-2 bg-secondary rounded-lg my-2 text-left flex justify-between gap-7 w-full'>{item.question} <LucideChevronsUpDown className='h-5 w-5' /> </CollapsibleTrigger>
-//                             <CollapsibleContent>
-//                                 <h2 className='p-2 bg-red-500 border rounded-lg my-2 '><strong>User Answer:</strong> {item.userAns}</h2>
-//                                 <h2 className='p-2 bg-blue-500 border rounded-lg my-2 '><strong>Correct Answer:</strong> {item.correctAns}</h2>
-//                                 <h2 className='p-2 bg-yellow-300 border rounded-lg my-2 '><strong>Rating:</strong> {item.rating}</h2>
-//                                 <h2 className='p-2 bg-green-500 border rounded-lg my-2 '><strong>Feedback:</strong> {item.feedback}</h2>
-//                             </CollapsibleContent>
-//                         </Collapsible>
-
-//                     ))}
-//                 </>
-//             }
-
-//             <Button onClick={() => router.replace('/dashboard')}>Go Home</Button>
-//         </div>
-//     )
-// }
-
-// export default Feedback
-
-"use client"
-import { db } from '@/utils/db';
-import { UserAnswer } from '@/utils/schema';
-import { eq } from 'drizzle-orm';
-import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+"use client";
+import { db } from "@/utils/db";
+import { UserAnswer, MockInterview } from "@/utils/schema";
+import { eq } from "drizzle-orm";
+import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import Header from "@/components/Header";
+import { Trophy, CheckCircle2, XCircle } from "lucide-react";
+import { CardContent, CardFooter } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { useUser } from "@clerk/nextjs";
 
 function Feedback({ params: paramsPromise }) {
-    const params = React.use(paramsPromise);
-    const [feedbackList, setFeedbackList] = useState([]);
-    const [overallRating, setOverallRating] = useState(0);
-    const router = useRouter();
+  const params = React.use(paramsPromise);
+  const [feedbackList, setFeedbackList] = useState([]);
+  const [overallRating, setOverallRating] = useState(0); // rating out of 10
+  const [jobPosition, setJobPosition] = useState("");
+  const [difficultyLevel, setDifficultyLevel] = useState("");
+  const router = useRouter();
+  const { user } = useUser();
 
-    useEffect(() => {
-        fetchFeedback();
-    }, []);
+  useEffect(() => {
+    fetchFeedback();
+    fetchJobDetails();
+  }, []);
 
-    const fetchFeedback = async () => {
-        const result = await db
-            .select()
-            .from(UserAnswer)
-            .where(eq(UserAnswer.mockIdRef, params.interviewId))
-            .orderBy(UserAnswer.id);
-        setFeedbackList(result);
-        calculateOverallRating(result);
-    };
+  const fetchFeedback = async () => {
+    const result = await db
+      .select()
+      .from(UserAnswer)
+      .where(eq(UserAnswer.mockIdRef, params.interviewId))
+      .orderBy(UserAnswer.id);
 
-    const calculateOverallRating = (feedback) => {
-        if (!feedback || feedback.length === 0) {
-            setOverallRating(0); // Default to 0 if no feedback
-            return;
-        }
+    setFeedbackList(result);
+    calculateOverallRating(result);
+  };
 
-        const totalRating = feedback.reduce((sum, item) => sum + (item.rating || 0), 0);
-        // const averageRating = totalRating / feedback.length;
-        setOverallRating(Math.round(averageRating * 10) / 10000); // Rounded to one decimal place
-    };
+  const fetchJobDetails = async () => {
+    const result = await db
+      .select({
+        jobPosition: MockInterview.jobPosition,
+        difficultyLevel: MockInterview.difficultyLevel,
+      })
+      .from(MockInterview)
+      .where(eq(MockInterview.mockId, params.interviewId))
+      .limit(1);
 
-    return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col items-center justify-center py-10 px-6">
-            {feedbackList.length === 0 ? (
-                <motion.div
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-center"
-                >
-                    <h2 className="font-extrabold text-4xl text-gray-500">No Interview Record Found</h2>
-                </motion.div>
-            ) : (
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="text-center"
-                >
-                    <h2 className="text-5xl font-extrabold text-green-600 animate-pulse mb-4">Congratulations!</h2>
-                    <h3 className="text-2xl font-semibold text-gray-700 mb-4">
-                        Here's Your Interview Feedback
-                    </h3>
-                    <p className="text-lg text-blue-600 mb-8">
-                        Your Overall Interview Rating is <strong>{overallRating}/10</strong>
-                    </p>
+    if (result.length > 0) {
+      setJobPosition(result[0].jobPosition);
+      setDifficultyLevel(result[0].difficultyLevel);
+    }
+  };
 
-                    <div className="space-y-6 w-full max-w-4xl">
-                        {feedbackList.map((item, index) => (
-                            <Collapsible key={index} className="border border-gray-300 rounded-lg shadow-md">
-                                <CollapsibleTrigger className="flex justify-between items-center p-4 bg-white rounded-t-lg cursor-pointer text-left">
-                                    <h2 className="font-bold text-xl text-gray-800">{`Q${index + 1}: ${item.question}`}</h2>
-                                    <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"></path>
-                                    </svg>
-                                </CollapsibleTrigger>
-                                <CollapsibleContent className="bg-gray-50 p-4">
-                                    <div className="space-y-4">
-                                        <div className="bg-red-100 p-3 rounded-lg">
-                                            <strong className="text-red-500">User Answer:</strong> {item.userAns}
-                                        </div>
-                                        <div className="bg-blue-100 p-3 rounded-lg">
-                                            <strong className="text-blue-500">Correct Answer:</strong> {item.correctAns}
-                                        </div>
-                                        <div className="bg-yellow-100 p-3 rounded-lg">
-                                            <strong className="text-yellow-500">Rating:</strong> {item.rating}
-                                        </div>
-                                        <div className="bg-green-100 p-3 rounded-lg">
-                                            <strong className="text-green-500">Feedback:</strong> {item.feedback}
-                                        </div>
-                                    </div>
-                                </CollapsibleContent>
-                            </Collapsible>
-                        ))}
+  const calculateOverallRating = (feedback) => {
+    if (!feedback || feedback.length === 0) {
+      setOverallRating(0);
+      return;
+    }
+
+    const validRatings = feedback
+      .map((item) => parseFloat(item.rating))
+      .filter((num) => !isNaN(num));
+
+    const total = validRatings.reduce((sum, num) => sum + num, 0);
+    const avg = validRatings.length > 0 ? total / validRatings.length : 0;
+
+    setOverallRating(parseFloat(avg.toFixed(1)));
+  };
+
+  const getProgressBarColor = (percentage) => {
+    if (percentage >= 80) return "bg-green-500";
+    if (percentage >= 50) return "bg-orange-400";
+    return "bg-red-500";
+  };
+
+  const ratingPercentage = overallRating * 10;
+  const progressColor = getProgressBarColor(ratingPercentage);
+
+  return (
+    <>
+      <Header />
+      <div className="mx-10 px-auto py-10">
+        <h1 className="flex items-center gap-2 text-3xl gradient-title mb-6">
+          <Trophy className="h-6 w-6 text-yellow-500" />
+          Interview Feedback
+        </h1>
+        <h3>Name of Candidate: {user?.fullName}</h3>
+        <h3>Job Position: {jobPosition}</h3>
+        <h3>Level of Difficulty: {difficultyLevel}</h3>
+
+        <CardContent className="space-y-6">
+          {feedbackList.length === 0 ? (
+            <div className="text-center text-gray-500 text-2xl font-semibold">
+              No Interview Record Found
+            </div>
+          ) : (
+            <>
+              {/* Score Overview */}
+              <div className="text-center space-y-2">
+                <h3 className="text-2xl font-bold">{ratingPercentage.toFixed(0)}%</h3>
+                <Progress
+                  value={ratingPercentage}
+                  className={'w-full bg-slate-600'}
+                />
+              </div>
+
+              {/* Questions Review */}
+              <div className="space-y-4">
+                <h3 className="font-medium text-lg text-muted-foreground">
+                  Question Review
+                </h3>
+                {feedbackList.map((item, index) => (
+                  <div
+                    key={index}
+                    className="border rounded-lg p-4 space-y-3 bg-white shadow-sm"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="font-medium">{`Q${index + 1}: ${item.question}`}</p>
+                      {parseFloat(item.rating) >= 8 ? (
+                        <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
+                      ) : (
+                        <XCircle className="h-5 w-5 text-red-500 flex-shrink-0" />
+                      )}
                     </div>
-                </motion.div>
-            )}
+                    <div className="text-sm text-muted-foreground space-y-1">
+                      <p>
+                        <strong className="text-red-500">Your answer:</strong>{" "}
+                        {item.userAns}
+                      </p>
+                      <p>
+                        <strong className="text-blue-500">Correct answer:</strong>{" "}
+                        {item.correctAns}
+                      </p>
+                      <p>
+                        <strong className="text-yellow-500">Rating:</strong>{" "}
+                        {item.rating}
+                      </p>
+                    </div>
+                    <div className="text-sm bg-muted p-2 rounded">
+                      <p className="font-medium text-green-600">Feedback:</p>
+                      <p>{item.feedback}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </CardContent>
 
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="mt-10"
-            >
-                <Button 
-                    className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-green-500 hover:to-blue-500 text-white px-6 py-3 rounded-lg font-semibold text-lg shadow-lg"
-                    onClick={() => router.replace('/dashboard')}
-                >
-                    Go to Dashboard
-                </Button>
-            </motion.div>
-        </div>
-    );
+        {feedbackList.length > 0 && (
+          <CardFooter>
+            <Button onClick={() => router.replace("/dashboard")} className="w-full">
+              Go to Dashboard
+            </Button>
+          </CardFooter>
+        )}
+      </div>
+    </>
+  );
 }
-
-// export default Feedback;
-
-
-
-// "use client"
-// import { db } from '@/utils/db';
-// import { UserAnswer } from '@/utils/schema';
-// import { eq } from 'drizzle-orm';
-// import React, { useEffect, useState } from 'react';
-// import { motion } from 'framer-motion';
-// import { Button } from '@/components/ui/button';
-// import { useRouter } from 'next/navigation';
-// import {
-//     Collapsible,
-//     CollapsibleContent,
-//     CollapsibleTrigger,
-// } from '@/components/ui/collapsible';
-// // import { Collapsible } from '@/components/ui/collapsible';
-// import { LucideChevronsUpDown } from 'lucide-react';
-
-// function Feedback({ params: paramsPromise }) {
-//     const params = React.use(paramsPromise);
-//     const [feedbackList, setFeedbackList] = useState([]);
-//     const router = useRouter();
-
-//     useEffect(() => {
-//         fetchFeedback();
-//     }, []);
-
-//     const fetchFeedback = async () => {
-//         const result = await db
-//             .select()
-//             .from(UserAnswer)
-//             .where(eq(UserAnswer.mockIdRef, params.interviewId))
-//             .orderBy(UserAnswer.id);
-//         setFeedbackList(result);
-//     };
-
-//     return (
-//         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex flex-col items-center justify-center py-10 px-6">
-//             {feedbackList.length === 0 ? (
-//                 <motion.div
-//                     initial={{ opacity: 0, y: 50 }}
-//                     animate={{ opacity: 1, y: 0 }}
-//                     className="text-center"
-//                 >
-//                     <h2 className="font-extrabold text-4xl text-gray-500">No Interview Record Found</h2>
-//                 </motion.div>
-//             ) : (
-//                 <motion.div
-//                     initial={{ opacity: 0, scale: 0.8 }}
-//                     animate={{ opacity: 1, scale: 1 }}
-//                     className="text-center"
-//                 >"sdsdsdd"
-//                     <h2 className="text-5xl font-extrabold text-green-600 animate-pulse mb-4">Congratulations!</h2>
-//                     <h3 className="text-2xl font-semibold text-gray-700 mb-4">
-//                         Here's Your Interview Feedback
-//                     </h3>
-//                     <p className="text-lg text-blue-600 mb-8">
-//                         Your Overall Interview Rating is <strong>7/10</strong>
-//                     </p>
-
-//                     <div className="grid grid-rows-1 md:grid-rows-2 lg:grid-rows-3 gap-8">
-//                         {feedbackList.map((item, index) => (
-//                             <motion.div
-//                                 key={index}
-//                                 initial={{ opacity: 0, y: 30 }}
-//                                 whileInView={{ opacity: 1, y: 0 }}
-//                                 viewport={{ once: true }}
-//                                 transition={{ delay: 0.1 * index, duration: 0.3 }}
-//                                 className="relative overflow-hidden bg-white shadow-lg rounded-xl border border-gray-200 transform transition-transform hover:scale-105"
-//                             >
-//                                 <Collapsible>
-//                                 <CollapsibleTrigger className='p-2 bg-secondary rounded-lg my-2 text-left flex justify-between gap-7 w-full'>{item.question} <LucideChevronsUpDown className='h-5 w-5' /> </CollapsibleTrigger>
-//                                 <CollapsibleContent>
-//                                 <div className="p-6 space-y-4">
-//                                     <h2 className="font-bold text-xl text-gray-800 mb-4">{item.question}</h2>
-//                                     <div className="flex flex-col">
-//                                         <div className="flex items-start gap-2 bg-red-100 p-3 rounded-lg">
-//                                             <span className="text-red-500 font-semibold">User Answer:</span> 
-//                                             <p>{item.userAns}</p>
-//                                         </div>
-//                                         <div className="flex items-start gap-2 bg-blue-100 p-3 rounded-lg">
-//                                             <span className="text-blue-500 font-semibold">Correct Answer:</span> 
-//                                             <p>{item.correctAns}</p>
-//                                         </div>
-//                                     </div>
-//                                     <div className="flex justify-between items-center">
-//                                         <div className="bg-yellow-100 px-4 py-2 rounded-full text-yellow-700 font-bold text-sm">Rating: {item.rating}</div>
-//                                         <div className="bg-green-100 px-4 py-2 rounded-full text-green-700 font-bold text-sm">Feedback: {item.feedback}</div>
-//                                     </div>
-//                                 </div>
-//                                 <div className="absolute top-0 right-0 bg-gradient-to-tr from-blue-500 to-green-500 text-white p-2 rounded-bl-xl text-sm font-bold">
-//                                     Q{index + 1}
-//                                 </div>
-//                                 </CollapsibleContent>
-//                                 </Collapsible>
-//                             </motion.div>
-//                         ))}
-//                     </div>
-//                 </motion.div>
-//             )}
-
-//             <motion.div
-//                 initial={{ opacity: 0, y: 20 }}
-//                 animate={{ opacity: 1, y: 0 }}
-//                 transition={{ delay: 0.5 }}
-//                 className="mt-10"
-//             >
-//                 <Button 
-//                     className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-green-500 hover:to-blue-500 text-white px-6 py-3 rounded-lg font-semibold text-lg shadow-lg"
-//                     onClick={() => router.replace('/dashboard')}
-//                 >
-//                     Go to Dashboard
-//                 </Button>
-//             </motion.div>
-//         </div>
-//     );
-// }
-
-
-
-
 
 export default Feedback;

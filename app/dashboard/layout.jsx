@@ -1,6 +1,4 @@
 import React from 'react'
-// import Header from './_components/Header'
-// import Footer from '@/components/Footer'
 import { Toaster } from '@/components/ui/sonner'
 
 function DasboardLayout({children}) {
