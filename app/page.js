@@ -5,24 +5,28 @@ import Chatbot from "@/components/Chatbot";
 import { ArrowRight } from "lucide-react";
 import { howItWorks } from "@/lib/howItWorks";
 import Footer from '@/components/Footer';
-import Header from "./dashboard/_components/Header";
+import Header from "@/components/Header";
+
 
 export default function Home() {
   return (
     <div>
       <Header/>
       <div className="grid-background">
-        {/* <video
+        <video
           autoPlay
           loop
           muted
           playsInline
-          className=" absolute inset-0 w-full h-full object-cover z-0"
+          className=" absolute inset-0 w-full h-full object-cover z-2 "
         >
           <source src={'/video.mp4'} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
-        <div className="grid-background"></div>       */}
+        
+  {/* Overlay */}
+  <div className="absolute inset-0 bg-white bg-opacity-50 z-10" />
+             
       </div>
       <section className="w-full pt-36 md:pt-48 pb-10">
         <div className="space-y-6 text-center">

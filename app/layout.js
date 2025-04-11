@@ -4,8 +4,6 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import DasboardLayout from "./dashboard/layout";
 import { Toaster } from '@/components/ui/sonner';
-import Link from 'next/link';
-import Header from './dashboard/_components/Header';
 
 
 const geistSans = Geist({
