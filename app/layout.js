@@ -26,9 +26,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body>
-          {/* Header */}
+          
           {/* <Header /> */}
           <main>{children}</main>
           <Toaster />

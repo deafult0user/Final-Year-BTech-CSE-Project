@@ -1,15 +1,17 @@
 import React from 'react'
-import Header from './_components/Header'
-import Footer from '@/components/Footer'
+// import Header from './_components/Header'
+// import Footer from '@/components/Footer'
+import { Toaster } from '@/components/ui/sonner'
 
 function DasboardLayout({children}) {
   return (
     <div>
-      <Header/>
-      <div className='mx-5 md:mx-20 lg:mx-36 '>
+      {/* <Header/> */}
+      <div className='mx-auto '>
       {children}
+      <Toaster/>
       </div>  
-      <Footer/>   
+      {/* <Footer/>    */}
     </div>
   )
 }

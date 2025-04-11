@@ -12,9 +12,9 @@ import Webcam from 'react-webcam';
 function Interview({ params: paramsPromise }) {
     const params = React.use(paramsPromise);
     const [interviewData, setinterviewData] = useState({
-        jobPosition: '',
-        jobDesc: '',
-        jobExperience: ''
+        jobPosition: '...',
+        jobDesc: '...',
+        jobExperience: '...'
     });
 
     const [webcamEnable, setwebcamEnable] = useState(false);
@@ -95,19 +95,27 @@ function Interview({ params: paramsPromise }) {
                     {webcamEnable ? (
                         <>
                             <Webcam
+                                audio={true}
                                 onUserMedia={() => setwebcamEnable(true)}
                                 onUserMediaError={() => setwebcamEnable(false)}
                                 className="rounded-lg shadow-lg"
                                 style={{ height: 300, width: 300 }}
                                 mirrored={true}
                             />
+                            <Button
+                                variant="ghost"
+                                className="w-full mt-5 bg-blue-900 text-white font-medium py-2 px-4 rounded-lg shadow hover:opacity-90"
+                                onClick={() => setwebcamEnable(false)}
+                            >
+                                Disable Webcam and Microphone
+                            </Button>
                         </>
                     ) : (
                         <>
-                            <WebcamIcon className="h-36 w-36 text-gray-400 my-5 p-10 bg-gray-50 rounded-full border border-gray-200" />
+                            <WebcamIcon className="h-36 w-36 text-black my-5 p-10 bg-gray-300 rounded-full border border-gray-200" />
                             <Button
                                 variant="ghost"
-                                className="w-full mt-5 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium py-2 px-4 rounded-lg shadow hover:opacity-90"
+                                className="w-full mt-5 bg-blue-900 text-white font-medium py-2 px-4 rounded-lg shadow hover:opacity-90"
                                 onClick={() => setwebcamEnable(true)}
                             >
                                 Enable Webcam and Microphone

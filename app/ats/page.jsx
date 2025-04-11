@@ -4,6 +4,8 @@ import { IoCloseOutline } from "react-icons/io5";
 import { Button } from '@/components/ui/button';
 import { chatSession } from '@/utils/GeminiAiModel';
 import { ClerkProvider } from '@clerk/nextjs';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 const Page = () => {
     const [formData, setFormData] = useState({
@@ -49,6 +51,7 @@ const Page = () => {
 
     return (
         <ClerkProvider>
+            <Header/>
             <div className="min-h-screen bg-gray-100 flex flex-col items-center py-12 px-6">
                 <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-4xl">
                     <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">ATS Score Checker</h1>
@@ -117,6 +120,7 @@ const Page = () => {
                     </div>
                 )}
             </div>
+            <Footer/>
         </ClerkProvider>
     );
 };
