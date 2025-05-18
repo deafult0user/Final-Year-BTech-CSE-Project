@@ -101,7 +101,7 @@ function Feedback({ params: paramsPromise }) {
                 <h3 className="text-2xl font-bold">{ratingPercentage.toFixed(0)}%</h3>
                 <Progress
                   value={ratingPercentage}
-                  className={'w-full bg-slate-600'}
+                  className={'w-full'}
                 />
               </div>
 
