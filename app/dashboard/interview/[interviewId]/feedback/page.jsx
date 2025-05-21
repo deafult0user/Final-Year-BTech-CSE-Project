@@ -14,7 +14,7 @@ import { useUser } from "@clerk/nextjs";
 function Feedback({ params: paramsPromise }) {
   const params = React.use(paramsPromise);
   const [feedbackList, setFeedbackList] = useState([]);
-  const [overallRating, setOverallRating] = useState(0); // rating out of 10
+  const [overallRating, setOverallRating] = useState(0);
   const [jobPosition, setJobPosition] = useState("");
   const [difficultyLevel, setDifficultyLevel] = useState("");
   const router = useRouter();
@@ -59,7 +59,13 @@ function Feedback({ params: paramsPromise }) {
     }
 
     const validRatings = feedback
-      .map((item) => parseFloat(item.rating))
+      .map((item) => {
+        const rating = parseFloat(item.rating);
+        if (isNaN(rating)) {
+          console.warn("Invalid rating in item:", item);
+        }
+        return rating;
+      })
       .filter((num) => !isNaN(num));
 
     const total = validRatings.reduce((sum, num) => sum + num, 0);
@@ -85,9 +91,9 @@ function Feedback({ params: paramsPromise }) {
           <Trophy className="h-6 w-6 text-yellow-500" />
           Interview Feedback
         </h1>
-        <h3>Name of Candidate: {user?.fullName}</h3>
-        <h3>Job Position: {jobPosition}</h3>
-        <h3>Level of Difficulty: {difficultyLevel}</h3>
+        <h3><strong>Name of Candidate:</strong> {user?.fullName}</h3>
+        <h3><strong>Job Position:</strong> {jobPosition}</h3>
+        <h3><strong>Level of Difficulty:</strong> {difficultyLevel}</h3>
 
         <CardContent className="space-y-6">
           {feedbackList.length === 0 ? (
@@ -101,7 +107,7 @@ function Feedback({ params: paramsPromise }) {
                 <h3 className="text-2xl font-bold">{ratingPercentage.toFixed(0)}%</h3>
                 <Progress
                   value={ratingPercentage}
-                  className={'w-full'}
+                  className="w-full"
                 />
               </div>
 
@@ -148,13 +154,11 @@ function Feedback({ params: paramsPromise }) {
           )}
         </CardContent>
 
-        {feedbackList.length > 0 && (
-          <CardFooter>
-            <Button onClick={() => router.replace("/dashboard")} className="w-full">
-              Go to Dashboard
-            </Button>
-          </CardFooter>
-        )}
+        <CardFooter>
+          <Button onClick={() => router.replace("/dashboard")} className="w-full">
+            Go to Dashboard
+          </Button>
+        </CardFooter>
       </div>
     </>
   );

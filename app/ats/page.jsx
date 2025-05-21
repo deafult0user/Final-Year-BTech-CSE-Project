@@ -67,6 +67,7 @@ const ATSCheckerPage = () => {
         <ClerkProvider>
             <Header />
             <div className="min-h-screen bg-gray-100 flex flex-col items-center py-12 px-6">
+                
                 <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-4xl">
                     <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">ATS Score Checker</h1>
                     <div className="grid gap-6">
@@ -125,11 +126,8 @@ const ATSCheckerPage = () => {
                         <Button onClick={calculateATSScore} className="w-full py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition">
                             Calculate ATS Score
                         </Button>
-                    </div>
-                </div>
-
-                {atsScore && (
-                    <div className="mt-6 bg-gradient-to-b from-blue-500 to-blue-400 p-6 rounded-lg shadow-lg text-white text-center w-full max-w-md">
+                        {atsScore && (
+                    <div className="mb-6 bg-gradient-to-b from-blue-500 to-blue-400 p-6 rounded-lg shadow-lg text-white text-center w-full">
                         <h1 className="text-5xl font-bold">{atsScore}%</h1>
                         <p className="text-xl mt-2">Your ATS Score</p>
                         <Button onClick={() => setAtsScore("")} className="mt-4 bg-white text-blue-600 w-full py-2 rounded-md font-semibold">
@@ -137,6 +135,9 @@ const ATSCheckerPage = () => {
                         </Button>
                     </div>
                 )}
+                    </div>
+                </div>
+                
             </div>
             <Footer />
         </ClerkProvider>

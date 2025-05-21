@@ -18,8 +18,8 @@ function Dashboard() {
       {/* Header Section */}
       <div className="flex flex-col justify-between  mb-10">
       {/* <span className="text-white font-semibold">Hi, {user?.firstName}!</span> */}
-        <h1 className="text-3xl font-extrabold text-blue-900"> Dashboard</h1>
-        <h2 className="text-2xl font-bold text-blue-900">Hi, {user?.fullName} !</h2>
+        <h1 className="text-3xl font-extrabold text-blue-900 mx-10 mb-10"> Dashboard</h1>
+        <h2 className="text-2xl font-bold text-blue-900 mx-10">Hi, {user?.fullName} !</h2>
       </div>
 
       {/* Create New Mock Interview Section */}

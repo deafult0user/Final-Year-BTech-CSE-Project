@@ -44,7 +44,7 @@ function InterviewItemCard({ interview }) {
       <Card className="p-6 shadow-md border rounded-xl hover:shadow-lg transition-all">
         <div className="flex flex-col items-center space-y-3">
           <div className="p-2 bg-blue-100 rounded-full">
-            <Briefcase className="h-6 w-6 text-blue-600" />
+            <Briefcase className="h-6 w-6 text-blue-00" />
           </div>
           <h2 className="text-xl font-semibold text-gray-800">
             {interview?.jobPosition}
@@ -75,7 +75,7 @@ function InterviewItemCard({ interview }) {
             <Button onClick={onFeedback} variant="outline" className="w-full">
               Feedback
             </Button>
-            <Button onClick={onStart} className="w-full bg-blue-500 text-white">
+            <Button onClick={onStart} className="w-full bg-blue-950 text-white">
               Start
             </Button>
           </div>

@@ -11,19 +11,19 @@ import { db } from '@/utils/db';
 import { MockInterview } from '@/utils/schema';
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
-import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
+import { useUser } from '@clerk/nextjs';
 function AddNewInterview() {
+    const { user } = useUser();
     const [openDialog, setOpenDialog] = useState(false);
     const [JobPosition, setJobPosition] = useState();
     const [JobDesc, setJobDesc] = useState();
     const [JobExp, setJobExp] = useState();
     const [Level, setLevel] = useState('');
     const [loading, setLoading] = useState(false);
-    const { user } = useUser();
     const router = useRouter();
 
     const onSubmit = async (e) => {
@@ -33,7 +33,7 @@ function AddNewInterview() {
         const InputPrompt = `Job Position:${JobPosition}, Job Description: ${JobDesc}, Years of Experience: ${JobExp}, Based on this information, please generate ${process.env.NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT} interview questions with answers in JSON format at difficulty level: ${Level}`;
         const result = await chatSession.sendMessage(InputPrompt);
         const MockJsonResponse = (result.response.text()).replace('```json', '').replace('```', '');
-        
+        // console.log(result);
         const response = await db.insert(MockInterview).values({
             mockId: uuidv4(),
             jsonMockResp: MockJsonResponse,

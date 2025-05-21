@@ -82,7 +82,7 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex, intervie
         - User Answer: ${userAnswer}
         - Difficulty Level: ${interviewData?.difficultyLevel}
 
-        Please evaluate the user's answer based on the question and difficulty level also provide:
+        Please evaluate the user's answer (by comparing the important keywords from correct answer) based on the question and difficulty level also provide:
         1. A numerical rating (1 to 10) under the field "rating".
         2. A concise feedback under the field "feedback" in 1 to 2 sentences.
 
@@ -91,7 +91,7 @@ function RecordAnsSection({ mockInterviewQuestion, activeQuestionIndex, intervie
       const feedbackResult = await chatSession.sendMessage(feedbackPrompt);
       const feedbackText = await feedbackResult.response.text();
       const cleanJson = feedbackText.replace(/```json|```/g, "").trim();
-
+      // console.log(cleanJson)
       let JsonFeedbackResp;
       try {
         JsonFeedbackResp = JSON.parse(cleanJson);

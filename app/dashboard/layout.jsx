@@ -5,7 +5,7 @@ function DasboardLayout({children}) {
   return (
     <div>
       {/* <Header/> */}
-      <div className='mx-auto '>
+      <div className='mx-auto'>
       {children}
       <Toaster/>
       </div>  
